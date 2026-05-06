@@ -1,0 +1,111 @@
+[gd_scene format=3 uid="uid://c3tdfhers8lfi"]
+
+[ext_resource type="PackedScene" uid="uid://cbvwiqqmobanj" path="res://player.tscn" id="1_f3sb7"]
+[ext_resource type="Texture2D" uid="uid://c6adtguc8igqt" path="res://PNG/Dark/texture_04.png" id="1_fj7yv"]
+[ext_resource type="Shader" uid="uid://cs5t3ucnw13ul" path="res://psx_dithering.gdshader" id="3_tlwt5"]
+[ext_resource type="Texture2D" uid="uid://buihsvwk8a5h7" path="res://PNG/Light/texture_08.png" id="4_aqk2v"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fj7yv"]
+sky_horizon_color = Color(0.9363807, 0.9712777, 1.0188072, 1)
+ground_bottom_color = Color(0.38431373, 0.45490196, 0.54901963, 1)
+ground_horizon_color = Color(0.9363807, 0.9712777, 1.0188072, 1)
+
+[sub_resource type="Sky" id="Sky_tlwt5"]
+sky_material = SubResource("ProceduralSkyMaterial_fj7yv")
+
+[sub_resource type="Environment" id="Environment_aqk2v"]
+background_mode = 2
+sky = SubResource("Sky_tlwt5")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_aqk2v"]
+albedo_texture = ExtResource("1_fj7yv")
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tlwt5"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_036b0"]
+albedo_texture = ExtResource("1_fj7yv")
+uv1_triplanar = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_aqk2v"]
+shader = ExtResource("3_tlwt5")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dwbse"]
+albedo_texture = ExtResource("4_aqk2v")
+uv1_triplanar = true
+
+[node name="World" type="Node3D" unique_id=823230666]
+
+[node name="player" parent="." unique_id=683743006 instance=ExtResource("1_f3sb7")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3523693, 0)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=655724500]
+transform = Transform3D(-0.72537446, -0.68707055, 0.042023014, 0, 0.061048508, 0.9981348, -0.6883545, 0.7240215, -0.04428303, 0, 0, 0)
+light_color = Color(0.92156863, 0.7176471, 0, 1)
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1162637276]
+environment = SubResource("Environment_aqk2v")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="." unique_id=490875712]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4947254, 0)
+use_collision = true
+size = Vector3(75, 1, 75)
+material = SubResource("StandardMaterial3D_aqk2v")
+
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="." unique_id=2060294588]
+operation = 2
+use_collision = true
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="CSGCombiner3D" unique_id=641218553]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 29, 0)
+radius = 18.0
+height = 60.0
+sides = 32
+material = SubResource("StandardMaterial3D_tlwt5")
+
+[node name="CSGCylinder3D2" type="CSGCylinder3D" parent="CSGCombiner3D" unique_id=943056352]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 29.5, 0)
+operation = 2
+radius = 17.5
+height = 60.0
+sides = 32
+material = SubResource("StandardMaterial3D_036b0")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=552186803]
+material = SubResource("ShaderMaterial_aqk2v")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="." unique_id=2010467303]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 4.9708433, 0)
+use_collision = true
+radius = 1.488
+height = 37.841
+sides = 32
+smooth_faces = false
+material = SubResource("StandardMaterial3D_dwbse")
+
+[node name="CSGCylinder3D2" type="CSGCylinder3D" parent="." unique_id=1677413573]
+transform = Transform3D(0.8660254, 0.5, -2.1855694e-08, 0, -4.371139e-08, -1, -0.5, 0.8660254, -3.7855173e-08, 0, 8.614909, 0)
+use_collision = true
+radius = 1.488
+height = 37.841
+sides = 32
+smooth_faces = false
+material = SubResource("StandardMaterial3D_dwbse")
+
+[node name="CSGCylinder3D3" type="CSGCylinder3D" parent="." unique_id=661906751]
+transform = Transform3D(-0.258819, 0.9659258, -4.222196e-08, 0, -4.371139e-08, -1, -0.9659258, -0.258819, 1.1313339e-08, 0, 12.990288, 0)
+use_collision = true
+radius = 1.488
+height = 37.841
+sides = 32
+smooth_faces = false
+material = SubResource("StandardMaterial3D_dwbse")
