@@ -128,7 +128,7 @@ func movement(delta):
 	if not is_on_floor() and can_walljump:
 		if Input.is_action_just_pressed("Space"):
 			walljumpbuffertimer = 0.150
-	if not is_on_floor() and can_wallkick:
+	if can_wallkick:
 		if Input.is_action_just_pressed("LC"):
 			wallkickbuffertimer = 0.150
 	
