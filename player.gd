@@ -4,7 +4,7 @@ extends CharacterBody3D
 @onready var head: Node3D = $head
 @onready var fps: Label3D = $head/Camera3D/FPS_Count
 @onready var walljumpRC: RayCast3D = $head/Camera3D/Walljumpcast
-@onready var wallkickRC: ShapeCast3D = $Wallkickshapecast
+@onready var wallkickRC: RayCast3D = $head/Camera3D/Wallkickcast
 @onready var grapplecast: RayCast3D = $head/Camera3D/Grapplecast
 @onready var grappleline:= MeshInstance3D.new()
 
@@ -29,11 +29,13 @@ var mouse_sensi = 0.0015
 var fov_normal = 91.0
 var fov_sprinting = 100.0
 
+var can_walljump = true
 var can_wallkick = true
 var wallkickstr = 20
 var wallkickjumpstr = 12
 var walljumpstr = 18
-var wallkickbuffertimer = 0
+var walljumpbuffertimer = 0.0
+var wallkickbuffertimer = 0.0
 
 @export var desired_distance:float = 2
 var grappelnd = false
@@ -121,30 +123,40 @@ func movement(delta):
 	##WALLKICK/JUMP UND NORMALER JUMP
 	#wall kick
 	var WJcollider = walljumpRC.get_collider()
-	var WKcollider = null
-	if wallkickRC.is_colliding():
-		WKcollider = wallkickRC.get_collider(0)
+	var WKcollider = wallkickRC.get_collider()
 	
-	if not is_on_floor() and can_wallkick:
+	if not is_on_floor() and can_walljump:
 		if Input.is_action_just_pressed("Space"):
+			walljumpbuffertimer = 0.150
+	if not is_on_floor() and can_wallkick:
+		if Input.is_action_just_pressed("LC"):
 			wallkickbuffertimer = 0.150
+	
+	walljumpbuffertimer -= delta
+	walljumpbuffertimer = clamp(walljumpbuffertimer, 0, 0.150)
 	
 	wallkickbuffertimer -= delta
 	wallkickbuffertimer = clamp(wallkickbuffertimer, 0, 0.150)
-	
+	print(cur_speed)
 	if wallkickbuffertimer > 0:
+		if WKcollider and WKcollider.collision_layer == 1:
+			print("sex")
+			var opp_dir = Vector3(transform.basis.z.x, camera.transform.basis.z.y, transform.basis.z.z)
+			cur_speed = opp_dir * wallkickstr
+			velocity.y = opp_dir.y * wallkickstr
+			can_wallkick = false
+			wallkickbuffertimer = 0
+	
+	if walljumpbuffertimer > 0:
 		if WJcollider and WJcollider.collision_layer == 1:
 			velocity.y = walljumpstr
-			can_wallkick = false
-			wallkickbuffertimer = 0
-		elif WKcollider and WKcollider.collision_layer == 1:
-			cur_speed += -global_transform.basis.z * wallkickstr
-			velocity.y = wallkickjumpstr
-			can_wallkick = false
-			wallkickbuffertimer = 0
+			can_walljump = false
+			walljumpbuffertimer = 0
+		
 	if is_on_floor():
+		can_walljump = true
 		can_wallkick = true
-		wallkickbuffertimer = 0
+		walljumpbuffertimer = 0
 		
 	#SPRINGEN
 	if not grappelnd and Input.is_action_just_pressed("Space"):
@@ -201,7 +213,7 @@ func grav(delta):
 	if not is_on_floor() and not grappelnd:
 		velocity.y -= gravity_player * delta
 	elif grappelnd:
-		velocity.y = -gravity_player * delta * 20
+		velocity.y = -gravity_player * delta * 8
 
 func fps_anzeige():
 	fps.text = str(Engine.get_frames_per_second())

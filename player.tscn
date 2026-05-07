@@ -6,8 +6,6 @@
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_4flbx"]
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_4flbx"]
-
 [node name="Node3D" type="Node3D" unique_id=683743006]
 
 [node name="CharacterBody3D" type="CharacterBody3D" parent="." unique_id=1901109027]
@@ -36,12 +34,12 @@ text = "asddas"
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.100000024, -0.36849606)
 target_position = Vector3(0, -1.6, 0)
 
+[node name="Wallkickcast" type="RayCast3D" parent="CharacterBody3D/head/Camera3D" unique_id=1235738987]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0.009, -0.05, -0.36)
+target_position = Vector3(0, -1.5, 0)
+debug_shape_custom_color = Color(0.42745098, 0.13333334, 0.9647059, 1)
+
 [node name="Grapplecast" type="RayCast3D" parent="CharacterBody3D/head/Camera3D" unique_id=540990129]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.03203374, -0.50217885)
 target_position = Vector3(0, -20, 0)
 debug_shape_custom_color = Color(0, 0.8509804, 0, 1)
-
-[node name="Wallkickshapecast" type="ShapeCast3D" parent="CharacterBody3D" unique_id=1563789590]
-transform = Transform3D(1.7, 0, 0, 0, -7.430936e-08, -1.7, 0, 1.7, -7.430936e-08, 0.009085417, 0.2790314, 0.4126609)
-shape = SubResource("SphereShape3D_4flbx")
-target_position = Vector3(0, 0, 0)
