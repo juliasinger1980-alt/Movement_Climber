@@ -36,6 +36,7 @@ var wallkickjumpstr = 12
 var walljumpstr = 18
 var walljumpbuffertimer = 0.0
 var wallkickbuffertimer = 0.0
+var wallkickmovementtimer = 0.0
 
 @export var desired_distance:float = 2
 var grappelnd = false
@@ -58,9 +59,10 @@ func _physics_process(delta: float) -> void:
 	
 	grav(delta)
 	
-	if is_on_wall():
-		var normal = get_wall_normal()
-		cur_speed = cur_speed.slide(normal)
+	if is_on_wall() and wallkickmovementtimer == 0:
+		var n = get_wall_normal()
+		if cur_speed.dot(n) < 0:
+			cur_speed = cur_speed.slide(n)
 	
 	grappling_hook(delta)
 	
@@ -108,14 +110,15 @@ func movement(delta):
 	
 	
 	##CUR SPEED UND VELOCITY SETZEN
-	if grappelnd:
-		cur_speed = lerp(cur_speed, max_speed * dir, 3 * delta)
-	#LUFTMOVEMENT
-	elif not is_on_floor():
-		cur_speed = lerp(cur_speed, max_speed * dir, 12 * delta * air_control_mult)
-	#BODENMOVEMENT
-	else:
-		cur_speed = lerp(cur_speed, max_speed * dir, 12 * delta)
+	if wallkickbuffertimer == 0:
+		if grappelnd:
+			cur_speed = lerp(cur_speed, max_speed * dir, 3 * delta)
+		#LUFTMOVEMENT
+		elif not is_on_floor():
+			cur_speed = lerp(cur_speed, max_speed * dir, 12 * delta * air_control_mult)
+		#BODENMOVEMENT
+		else:
+			cur_speed = lerp(cur_speed, max_speed * dir, 12 * delta)
 
 	velocity.x = cur_speed.x
 	velocity.z = cur_speed.z
@@ -131,16 +134,20 @@ func movement(delta):
 	if can_wallkick:
 		if Input.is_action_just_pressed("LC"):
 			wallkickbuffertimer = 0.150
+			wallkickmovementtimer = 0.5
 	
 	walljumpbuffertimer -= delta
 	walljumpbuffertimer = clamp(walljumpbuffertimer, 0, 0.150)
 	
+	wallkickmovementtimer -= delta
+	wallkickmovementtimer = clamp(walljumpbuffertimer, 0, 0.5)
+	
 	wallkickbuffertimer -= delta
 	wallkickbuffertimer = clamp(wallkickbuffertimer, 0, 0.150)
-	print(cur_speed)
+	
 	if wallkickbuffertimer > 0:
 		if WKcollider and WKcollider.collision_layer == 1:
-			print("sex")
+			print("jetzt")
 			var opp_dir = Vector3(transform.basis.z.x, camera.transform.basis.z.y, transform.basis.z.z)
 			cur_speed = opp_dir * wallkickstr
 			velocity.y = opp_dir.y * wallkickstr
