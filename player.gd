@@ -7,6 +7,7 @@ extends CharacterBody3D
 @onready var wallkickRC: RayCast3D = $head/Camera3D/Wallkickcast
 @onready var grapplecast: RayCast3D = $head/Camera3D/Grapplecast
 @onready var grappleline:= MeshInstance3D.new()
+@onready var pullRC: RayCast3D = $head/Camera3D/Pullcast
 
 var gravity_player = 40
 
@@ -49,6 +50,13 @@ var direction = Vector3.ZERO
 var rope_direction = Vector3.ZERO
 var im_mesh:= ImmediateMesh.new()
 
+var pulling = false
+var punkt = Vector3.ZERO
+var orig_dist = 0.0
+var orig_direction_to_point = Vector3.ZERO
+var orig_direction_to_player = Vector3.ZERO
+@export var wanted_dist = 5
+
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	add_child(grappleline)
@@ -64,7 +72,9 @@ func _physics_process(delta: float) -> void:
 		if cur_speed.dot(n) < 0:
 			cur_speed = cur_speed.slide(n)
 	
-	grappling_hook(delta)
+	pull()
+	
+	#grappling_hook(delta)
 	
 	move_and_slide()
 	
@@ -185,42 +195,69 @@ func movement(delta):
 		velocity.y = sprungstaerke
 		koyotebuffertimer = 0
 	
-func grappling_hook(_delta):
-	if can_grapple and not grappelnd and not is_on_floor() and grapplecast:
-		if Input.is_action_just_pressed("RC"):
-			hitpoint = grapplecast.get_collision_point()
-			#if hitpoint.y > position.y:
-			distance = (hitpoint - position).length()
-			direction = (hitpoint - position).normalized()
-			rope_direction = (position - hitpoint).normalized()
-			grappelnd = true
-			can_grapple = false
+#func grappling_hook(_delta):
+	#if can_grapple and not grappelnd and not is_on_floor() and grapplecast:
+		#if Input.is_action_just_pressed("RC"):
+			#hitpoint = grapplecast.get_collision_point()
+			##if hitpoint.y > position.y:
+			#distance = (hitpoint - position).length()
+			#direction = (hitpoint - position).normalized()
+			#rope_direction = (position - hitpoint).normalized()
+			#grappelnd = true
+			#can_grapple = false
+	#
+	#if grappelnd:
+		#
+		#direction = (hitpoint - position).normalized()
+		#rope_direction = (position - hitpoint).normalized()
+		#
+		#if Input.is_action_just_released("RC") or is_on_floor():
+			#grappelnd = false
+		#
+		#elif Input.is_action_just_pressed("Space"):
+			#grappelnd = false
+			#velocity.y = sprungstaerke / 1.5
+		#cur_speed = cur_speed.clamp(Vector3(-16, 0, -16), Vector3(16, 0, 16))
+		#if cur_speed.dot(rope_direction) >= 0:
+			#velocity = velocity.slide(rope_direction)
+		#var power = ((hitpoint - position).length() - desired_distance) * 2
+		#print(cur_speed)
+		#if dir == Vector3.ZERO:
+			#velocity += direction * power
+		#else:
+			#velocity += direction * power
+		#
+	#if not grappelnd and is_on_floor():
+		#can_grapple = true
+
+func pull():
 	
-	if grappelnd:
-		
-		direction = (hitpoint - position).normalized()
-		rope_direction = (position - hitpoint).normalized()
-		
-		if Input.is_action_just_released("RC") or is_on_floor():
-			grappelnd = false
-		
-		elif Input.is_action_just_pressed("Space"):
-			grappelnd = false
-			velocity.y = sprungstaerke / 1.5
-		cur_speed = cur_speed.clamp(Vector3(-16, 0, -16), Vector3(16, 0, 16))
-		velocity = velocity.slide(rope_direction)
-		var power = ((hitpoint - position).length() - desired_distance) * 2
-		print(cur_speed)
-		velocity += direction * power
-		
-	if not grappelnd and is_on_floor():
-		can_grapple = true
+	var pos = camera.global_position
 	
+	if pullRC.is_colliding() and Input.is_action_just_pressed("RC"):
+		punkt = pullRC.get_collision_point()
+		orig_dist = (punkt - pos).length()
+		orig_direction_to_point = (punkt - pos).normalized()
+		orig_direction_to_player = (pos - punkt).normalized()
+		pulling = true
+	
+	print(pos)
+	if pulling:
+		var dist = (punkt - pos).length()
+		var direction_to_point = (punkt - pos).normalized()
+		var direction_to_player = (pos - punkt).normalized()
+		
+		position = position.lerp(punkt + wanted_dist * direction_to_player, 0.3)
+		
+		if Input.is_action_just_released("RC"):
+			pulling = false
+		
 func grav(delta):
-	if not is_on_floor() and not grappelnd:
-		velocity.y -= gravity_player * delta
-	elif grappelnd:
-		velocity.y = -gravity_player * delta * 8
+	if not pulling:
+		if not is_on_floor() and not grappelnd:
+			velocity.y -= gravity_player * delta
+		#elif grappelnd:
+			#velocity.y = -gravity_player * delta * 8
 
 func fps_anzeige():
 	fps.text = str(Engine.get_frames_per_second())
