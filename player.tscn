@@ -10,7 +10,6 @@
 
 [node name="CharacterBody3D" type="CharacterBody3D" parent="." unique_id=1901109027]
 script = ExtResource("1_4flbx")
-desired_distance = 7.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D" unique_id=749979467]
 shape = SubResource("CapsuleShape3D_sh265")
@@ -35,7 +34,7 @@ transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -
 target_position = Vector3(0, -1.6, 0)
 
 [node name="Pullcast" type="RayCast3D" parent="CharacterBody3D/head/Camera3D" unique_id=1603317544]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.080153584, -0.36849606)
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0.06, -0.368)
 target_position = Vector3(0, -2.1, 0)
 debug_shape_custom_color = Color(1, 1, 0.67058825, 1)
 

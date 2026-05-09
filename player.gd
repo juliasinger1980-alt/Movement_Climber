@@ -55,7 +55,7 @@ var punkt = Vector3.ZERO
 var orig_dist = 0.0
 var orig_direction_to_point = Vector3.ZERO
 var orig_direction_to_player = Vector3.ZERO
-@export var wanted_dist = 5
+var wanted_dist = 10
 
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
@@ -72,7 +72,7 @@ func _physics_process(delta: float) -> void:
 		if cur_speed.dot(n) < 0:
 			cur_speed = cur_speed.slide(n)
 	
-	pull()
+	pull(delta)
 	
 	#grappling_hook(delta)
 	
@@ -129,9 +129,10 @@ func movement(delta):
 		#BODENMOVEMENT
 		else:
 			cur_speed = lerp(cur_speed, max_speed * dir, 12 * delta)
-
-	velocity.x = cur_speed.x
-	velocity.z = cur_speed.z
+	
+	if not pulling:
+		velocity.x = cur_speed.x
+		velocity.z = cur_speed.z
 	
 	##WALLKICK/JUMP UND NORMALER JUMP
 	#wall kick
@@ -142,7 +143,7 @@ func movement(delta):
 		if Input.is_action_just_pressed("Space"):
 			walljumpbuffertimer = 0.150
 	if can_wallkick:
-		if Input.is_action_just_pressed("LC"):
+		if Input.is_action_just_pressed("RC"):
 			wallkickbuffertimer = 0.150
 			wallkickmovementtimer = 0.5
 	
@@ -230,34 +231,51 @@ func movement(delta):
 	#if not grappelnd and is_on_floor():
 		#can_grapple = true
 
-func pull():
+func pull(delta):
 	
 	var pos = camera.global_position
+	var look_dir = -camera.global_transform.basis.z
 	
-	if pullRC.is_colliding() and Input.is_action_just_pressed("RC"):
+	if pullRC.is_colliding() and Input.is_action_just_pressed("LC"):
 		punkt = pullRC.get_collision_point()
 		orig_dist = (punkt - pos).length()
 		orig_direction_to_point = (punkt - pos).normalized()
 		orig_direction_to_player = (pos - punkt).normalized()
+		var final_dist = 0.5 / orig_dist
+		if final_dist > orig_dist:
+			wanted_dist = final_dist
+		else:
+			wanted_dist = orig_dist
 		pulling = true
 	
-	print(pos)
+	print(velocity)
 	if pulling:
 		var dist = (punkt - pos).length()
 		var direction_to_point = (punkt - pos).normalized()
+		var look_direction_to_point = look_dir.normalized()
 		var direction_to_player = (pos - punkt).normalized()
+		var cam_point_dir = ((punkt + wanted_dist * -look_direction_to_point) - position).normalized()
 		
-		position = position.lerp(punkt + wanted_dist * direction_to_player, 0.3)
+		var old_position = position
 		
-		if Input.is_action_just_released("RC"):
+		position = position.lerp(punkt + wanted_dist * -look_direction_to_point, 0.3)
+		position.y -= camera.position.y
+		
+		#cur_speed = (position - old_position) * 100
+		velocity.y += (position.y - old_position.y) * 30
+		
+		if Input.is_action_just_released("LC"):
 			pulling = false
 		
 func grav(delta):
 	if not pulling:
 		if not is_on_floor() and not grappelnd:
 			velocity.y -= gravity_player * delta
-		#elif grappelnd:
-			#velocity.y = -gravity_player * delta * 8
+		elif grappelnd:
+			velocity.y = -gravity_player * delta * 8
+	#else:
+		#velocity.y -= gravity_player * delta /2
+		
 
 func fps_anzeige():
 	fps.text = str(Engine.get_frames_per_second())
