@@ -146,7 +146,7 @@ func movement(delta):
 		if Input.is_action_just_pressed("RC"):
 			wallkickbuffertimer = 0.150
 			wallkickmovementtimer = 0.5
-	
+	#
 	walljumpbuffertimer -= delta
 	walljumpbuffertimer = clamp(walljumpbuffertimer, 0, 0.150)
 	
@@ -231,7 +231,7 @@ func movement(delta):
 	#if not grappelnd and is_on_floor():
 		#can_grapple = true
 
-func pull(delta):
+func pull(_delta):
 	
 	var pos = camera.global_position
 	var look_dir = -camera.global_transform.basis.z
@@ -250,11 +250,11 @@ func pull(delta):
 	
 	print(velocity)
 	if pulling:
-		var dist = (punkt - pos).length()
-		var direction_to_point = (punkt - pos).normalized()
+		var _dist = (punkt - pos).length()
+		var _direction_to_point = (punkt - pos).normalized()
 		var look_direction_to_point = look_dir.normalized()
-		var direction_to_player = (pos - punkt).normalized()
-		var cam_point_dir = ((punkt + wanted_dist * -look_direction_to_point) - position).normalized()
+		var _direction_to_player = (pos - punkt).normalized()
+		var _cam_point_dir = ((punkt + wanted_dist * -look_direction_to_point) - position).normalized()
 		
 		var old_position = position
 		
@@ -262,7 +262,8 @@ func pull(delta):
 		position.y -= camera.position.y
 		
 		#cur_speed = (position - old_position) * 100
-		velocity.y += (position.y - old_position.y) * 30
+		velocity.y += (position.y - old_position.y) * 40
+		velocity.y = clamp(velocity.y, -INF, 28)
 		
 		if Input.is_action_just_released("LC"):
 			pulling = false
