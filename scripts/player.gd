@@ -27,8 +27,9 @@ var koyotebuffertimer = 0
 var x_rot = 0.0
 var y_rot = 0.0
 var mouse_sensi = 0.0015
-var fov_normal = 91.0
-var fov_sprinting = 100.0
+var fov_normal = 110.0
+var fov_sprinting = 120.0
+@onready var original_cam_pos =  camera.position
 
 var can_walljump = true
 var can_wallkick = true
@@ -50,12 +51,19 @@ var direction = Vector3.ZERO
 var rope_direction = Vector3.ZERO
 var im_mesh:= ImmediateMesh.new()
 
+var can_pull = true
 var pulling = false
 var punkt = Vector3.ZERO
 var orig_dist = 0.0
 var orig_direction_to_point = Vector3.ZERO
 var orig_direction_to_player = Vector3.ZERO
 var wanted_dist = 10
+
+var can_slide = true
+var sliding
+var camera_slide_offset = 0.7
+var slide_timer = 0.6
+@onready var slide_duration_max = slide_timer
 
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
@@ -133,7 +141,24 @@ func movement(delta):
 	velocity.x = cur_speed.x
 	velocity.z = cur_speed.z
 	
-	##WALLKICK/JUMP UND NORMALER JUMP
+	#SLIDE
+
+	#print(slide_timer)
+	if can_slide and slide_timer > 0 and (Input.is_action_just_pressed("STRG") or Input.is_action_just_pressed("C")):
+		sliding = true
+		
+	if sliding:
+		slide_timer -= delta
+		slide_timer = clamp(slide_timer, 0, slide_duration_max)
+		camera.position.y = lerp(camera.position.y, original_cam_pos.y - camera_slide_offset, delta * 8)
+		if slide_timer == 0 or (Input.is_action_just_released("STRG") or Input.is_action_just_released("C")):
+			print(slide_timer)
+			sliding = false
+			slide_timer = slide_duration_max
+	else: 
+		camera.position.y = lerp(camera.position.y, original_cam_pos.y, delta * 8)
+	
+	##WALLKICK/JUMP UND NORMALER JUMP UND SLIDE JUMP
 	#wall kick
 	var WJcollider = walljumpRC.get_collider()
 	var WKcollider = wallkickRC.get_collider()
@@ -145,7 +170,7 @@ func movement(delta):
 		if Input.is_action_just_pressed("RC"):
 			wallkickbuffertimer = 0.150
 			wallkickmovementtimer = 0.5
-	#
+	
 	walljumpbuffertimer -= delta
 	walljumpbuffertimer = clamp(walljumpbuffertimer, 0, 0.150)
 	
@@ -157,7 +182,6 @@ func movement(delta):
 	
 	if wallkickbuffertimer > 0:
 		if WKcollider and WKcollider.collision_layer == 1:
-			print("jetzt")
 			var opp_dir = Vector3(transform.basis.z.x, camera.transform.basis.z.y, transform.basis.z.z)
 			cur_speed = opp_dir * wallkickstr
 			velocity.y = opp_dir.y * wallkickstr
@@ -197,7 +221,7 @@ func movement(delta):
 	
 #func grappling_hook(_delta):
 	#if can_grapple and not grappelnd and not is_on_floor() and grapplecast:
-		#if Input.is_action_just_pressed("RC"):
+		#if Input.is_action_just_pressed("MC"):
 			#hitpoint = grapplecast.get_collision_point()
 			##if hitpoint.y > position.y:
 			#distance = (hitpoint - position).length()
@@ -211,7 +235,7 @@ func movement(delta):
 		#direction = (hitpoint - position).normalized()
 		#rope_direction = (position - hitpoint).normalized()
 		#
-		#if Input.is_action_just_released("RC") or is_on_floor():
+		#if Input.is_action_just_released("MC") or is_on_floor():
 			#grappelnd = false
 		#
 		#elif Input.is_action_just_pressed("Space"):
@@ -235,19 +259,21 @@ func pull(_delta):
 	var pos = camera.global_position
 	var look_dir = -camera.global_transform.basis.z
 	
-	if pullRC.is_colliding() and Input.is_action_just_pressed("LC"):
+	if can_pull and pullRC.is_colliding() and Input.is_action_just_pressed("LC"):
 		punkt = pullRC.get_collision_point()
+		var _obj = pullRC.get_collider()
 		orig_dist = (punkt - pos).length()
 		orig_direction_to_point = (punkt - pos).normalized()
 		orig_direction_to_player = (pos - punkt).normalized()
-		var final_dist = 0.5 / orig_dist
+		#var wall_normal =  obj.get_normal()
+		var final_dist = 0.8 / orig_dist
 		if final_dist > orig_dist:
 			wanted_dist = final_dist
 		else:
 			wanted_dist = orig_dist
+		can_pull = false
 		pulling = true
 	
-	print(cur_speed)
 	if pulling:
 		var _dist = (punkt - pos).length()
 		var _direction_to_point = (punkt - pos).normalized()
@@ -268,6 +294,9 @@ func pull(_delta):
 		
 		if Input.is_action_just_released("LC"):
 			pulling = false
+		
+	if is_on_floor():
+		can_pull = true
 		
 func grav(delta):
 	if not pulling:
