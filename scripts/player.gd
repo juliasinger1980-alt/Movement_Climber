@@ -29,6 +29,7 @@ var y_rot = 0.0
 var mouse_sensi = 0.0015
 var fov_normal = 110.0
 var fov_sprinting = 120.0
+var fov_sliding = 125.0
 @onready var original_cam_pos =  camera.position
 
 var can_walljump = true
@@ -63,6 +64,12 @@ var can_slide = true
 var sliding
 var camera_slide_offset = 0.7
 var slide_timer = 0.6
+var sliding_speed = 17.5
+var slide_control_mult = 0.1
+var slidejumpstaerke = 12.0
+var slidejumpboost = 6.0
+var slide_cooldown = 0.2
+@onready var slide_cooldown_max = slide_cooldown
 @onready var slide_duration_max = slide_timer
 
 func _ready() -> void:
@@ -116,6 +123,8 @@ func movement(delta):
 	if grappelnd:
 		sprinting = false
 		max_speed = target_speed_grappling
+	elif sliding:
+		camera.fov = lerp(camera.fov, fov_sliding, 8*delta)
 	elif Input.is_action_pressed("Shift"):
 		sprinting = true
 		max_speed = target_speed_sprint
@@ -134,6 +143,8 @@ func movement(delta):
 		#LUFTMOVEMENT
 		elif not is_on_floor():
 			cur_speed = lerp(cur_speed, max_speed * dir, 12 * delta * air_control_mult)
+		elif sliding:
+			cur_speed = lerp(cur_speed, sliding_speed * dir, 12 * delta * slide_control_mult)
 		#BODENMOVEMENT
 		else:
 			cur_speed = lerp(cur_speed, max_speed * dir, 12 * delta)
@@ -143,20 +154,34 @@ func movement(delta):
 	
 	#SLIDE
 
-	#print(slide_timer)
-	if can_slide and slide_timer > 0 and (Input.is_action_just_pressed("STRG") or Input.is_action_just_pressed("C")):
+	print(slide_cooldown)
+	if move_input != Vector2.ZERO and slide_cooldown == 0 and can_slide and slide_timer > 0 and (Input.is_action_just_pressed("STRG") or Input.is_action_just_pressed("C")):
+		cur_speed = sliding_speed * dir
 		sliding = true
 		
 	if sliding:
 		slide_timer -= delta
 		slide_timer = clamp(slide_timer, 0, slide_duration_max)
 		camera.position.y = lerp(camera.position.y, original_cam_pos.y - camera_slide_offset, delta * 8)
+		
+		
+		cur_speed *= 0.97
+		
 		if slide_timer == 0 or (Input.is_action_just_released("STRG") or Input.is_action_just_released("C")):
-			print(slide_timer)
 			sliding = false
 			slide_timer = slide_duration_max
+			slide_cooldown = slide_cooldown_max
 	else: 
 		camera.position.y = lerp(camera.position.y, original_cam_pos.y, delta * 8)
+	
+	if is_on_floor(): 
+		if slide_timer == slide_duration_max:
+			slide_cooldown -= delta
+			slide_cooldown = clamp(slide_cooldown, 0, slide_cooldown_max)
+			if slide_cooldown == 0:
+				can_slide = true
+	else: 
+		can_slide = false
 	
 	##WALLKICK/JUMP UND NORMALER JUMP UND SLIDE JUMP
 	#wall kick
@@ -213,8 +238,14 @@ func movement(delta):
 	sprungbuffertimer = clamp(sprungbuffertimer, 0, 0.150)
 	
 	if is_on_floor() and sprungbuffertimer > 0:
-		velocity.y = sprungstaerke
-		koyotebuffertimer = 0
+		if sliding:
+			sliding = false
+			slide_timer = slide_duration_max
+			velocity.y = slidejumpstaerke
+			cur_speed += slidejumpboost * dir
+		else:
+			velocity.y = sprungstaerke
+			koyotebuffertimer = 0
 	elif not is_on_floor() and koyotebuffertimer > 0 and Input.is_action_just_pressed("Space"):
 		velocity.y = sprungstaerke
 		koyotebuffertimer = 0
