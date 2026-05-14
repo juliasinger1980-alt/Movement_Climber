@@ -181,6 +181,8 @@ func movement(delta):
 			if slide_cooldown == 0:
 				can_slide = true
 	else: 
+		sliding = false
+		slide_timer = slide_duration_max
 		can_slide = false
 	
 	##WALLKICK/JUMP UND NORMALER JUMP UND SLIDE JUMP

@@ -204,7 +204,7 @@ use_collision = true
 
 [node name="CSGCylinder3D" type="CSGCylinder3D" parent="outermap/CSGCombiner3D" unique_id=641218553]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 29, 0)
-radius = 18.0
+radius = 15.0
 height = 60.0
 sides = 32
 material = SubResource("StandardMaterial3D_tlwt5")
@@ -212,7 +212,7 @@ material = SubResource("StandardMaterial3D_tlwt5")
 [node name="CSGCylinder3D2" type="CSGCylinder3D" parent="outermap/CSGCombiner3D" unique_id=943056352]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 29.5, 0)
 operation = 2
-radius = 17.5
+radius = 12.5
 height = 60.0
 sides = 32
 material = SubResource("StandardMaterial3D_036b0")
