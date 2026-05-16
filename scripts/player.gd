@@ -12,14 +12,15 @@ extends CharacterBody3D
 var gravity_player = 40
 
 var cur_speed = Vector3.ZERO
-var target_speed_gehen = 8.0
-var target_speed_sprint = 13.0
+var target_speed_gehen = 6.0
+var target_speed_sprint = 11.0
+var sliding_speed = 15.5
 var target_speed_grappling = 25.0
 var max_speed = 0.0
 var sprinting = false
 var dir = Vector3.ZERO
 
-var sprungstaerke = 15.0
+var sprungstaerke = 13.0
 var air_control_mult = 0.2
 var sprungbuffertimer = 0
 var koyotebuffertimer = 0
@@ -27,14 +28,14 @@ var koyotebuffertimer = 0
 var x_rot = 0.0
 var y_rot = 0.0
 var mouse_sensi = 0.0015
-var fov_normal = 110.0
-var fov_sprinting = 120.0
-var fov_sliding = 125.0
+var fov_normal = 100.0
+var fov_sprinting = 110.0
+var fov_sliding = 115.0
 @onready var original_cam_pos =  camera.position
 
 var can_walljump = true
 var can_wallkick = true
-var wallkickstr = 20
+var wallkickstr = 15
 var wallkickjumpstr = 12
 var walljumpstr = 18
 var walljumpbuffertimer = 0.0
@@ -58,16 +59,15 @@ var punkt = Vector3.ZERO
 var orig_dist = 0.0
 var orig_direction_to_point = Vector3.ZERO
 var orig_direction_to_player = Vector3.ZERO
-var wanted_dist = 10
+var wanted_dist = 1.5
 
 var can_slide = true
 var sliding
 var camera_slide_offset = 0.7
 var slide_timer = 0.6
-var sliding_speed = 17.5
 var slide_control_mult = 0.1
-var slidejumpstaerke = 12.0
-var slidejumpboost = 6.0
+var slidejumpstaerke = 10.0
+var slidejumpboost = 11.0
 var slide_cooldown = 0.2
 @onready var slide_cooldown_max = slide_cooldown
 @onready var slide_duration_max = slide_timer
@@ -94,6 +94,7 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 	
 	fps_anzeige()
+
 func _process(_delta: float) -> void:
 	#GRAPPLE_SCHNUR
 	if grappelnd:
@@ -154,7 +155,6 @@ func movement(delta):
 	
 	#SLIDE
 
-	print(slide_cooldown)
 	if move_input != Vector2.ZERO and slide_cooldown == 0 and can_slide and slide_timer > 0 and (Input.is_action_just_pressed("STRG") or Input.is_action_just_pressed("C")):
 		cur_speed = sliding_speed * dir
 		sliding = true
@@ -223,8 +223,8 @@ func movement(delta):
 		
 	if is_on_floor():
 		can_walljump = true
-		can_wallkick = true
 		walljumpbuffertimer = 0
+	can_wallkick = true
 		
 	#SPRINGEN
 	if not grappelnd and Input.is_action_just_pressed("Space"):
@@ -288,7 +288,6 @@ func movement(delta):
 		#can_grapple = true
 
 func pull(_delta):
-	
 	var pos = camera.global_position
 	var look_dir = -camera.global_transform.basis.z
 	
@@ -299,11 +298,12 @@ func pull(_delta):
 		orig_direction_to_point = (punkt - pos).normalized()
 		orig_direction_to_player = (pos - punkt).normalized()
 		#var wall_normal =  obj.get_normal()
-		var final_dist = 0.8 / orig_dist
-		if final_dist > orig_dist:
-			wanted_dist = final_dist
-		else:
-			wanted_dist = orig_dist
+		#var final_dist = 0.8 / orig_dist
+		#if final_dist > orig_dist:
+			#wanted_dist = final_dist
+		#else:
+			#wanted_dist = orig_dist
+		print(wanted_dist)
 		can_pull = false
 		pulling = true
 	
@@ -321,15 +321,15 @@ func pull(_delta):
 		
 		#cur_speed = (position - old_position) * 100
 		velocity.y += (position.y - old_position.y) * 40
-		cur_speed.x += (position.x - old_position.x) * 10
-		cur_speed.z += (position.z - old_position.z) * 10
-		velocity.y = clamp(velocity.y, -INF, 28)
+		cur_speed.x += (position.x - old_position.x) * 17
+		cur_speed.z += (position.z - old_position.z) * 17
+		velocity.y = clamp(velocity.y, -INF, 20)
 		
 		if Input.is_action_just_released("LC"):
 			pulling = false
 		
-	if is_on_floor():
-		can_pull = true
+	#if is_on_floor():
+	can_pull = true
 		
 func grav(delta):
 	if not pulling:
