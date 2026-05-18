@@ -28,6 +28,11 @@ window/vsync/vsync_mode=2
 
 enabled=PackedStringArray()
 
+[global_group]
+
+Enemy=""
+Player=""
+
 [input]
 
 W={

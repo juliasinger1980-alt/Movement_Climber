@@ -8,7 +8,7 @@
 
 [node name="Node3D" type="Node3D" unique_id=683743006]
 
-[node name="CharacterBody3D" type="CharacterBody3D" parent="." unique_id=1901109027]
+[node name="CharacterBody3D" type="CharacterBody3D" parent="." unique_id=1901109027 groups=["Player"]]
 script = ExtResource("1_4flbx")
 desired_distance = 4.0
 

@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://c3tdfhers8lfi"]
 
+[ext_resource type="PackedScene" uid="uid://d326rmtugk5mr" path="res://scenes/flying_enemy.tscn" id="1_i7141"]
 [ext_resource type="PackedScene" uid="uid://cbvwiqqmobanj" path="res://scenes/player.tscn" id="1_k0juu"]
 [ext_resource type="Texture2D" uid="uid://nyrhd7fdhrqd" path="res://textures/assets64/- Classic 64 Asset Pack 0.6/Wood/Materials/wood_plank_02.jpg" id="3_i7141"]
 [ext_resource type="Shader" uid="uid://cs5t3ucnw13ul" path="res://shader/psx_type/psx_dithering.gdshader" id="3_qfnet"]
@@ -63,6 +64,9 @@ uv1_triplanar_sharpness = 4.3736067
 texture_filter = 0
 
 [node name="World" type="Node3D" unique_id=823230666]
+
+[node name="flying_enemy" parent="." unique_id=1319906466 instance=ExtResource("1_i7141")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.2073581, -5.9289875)
 
 [node name="player" parent="." unique_id=683743006 instance=ExtResource("1_k0juu")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3523693, 0)
