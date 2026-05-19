@@ -1,5 +1,7 @@
 extends CharacterBody3D
 
+var held:int
+
 var cur_speed = Vector3.ZERO
 var player
 var max_speed = 6
@@ -11,7 +13,7 @@ var enemyknockbackstrength = 15
 var playerknockbackstrength = 30
 var hitcooldown = 0.5
 var hitcooldownmax = 0.5
-var randomness_cooldown = 1
+var randomness_cooldown = 0
 var randomness_cooldown_max = 1
 var randomness_multiplier = 0.5
 func _ready() -> void:
@@ -39,20 +41,23 @@ func movement(delta):
 	if randomness_cooldown == 0:
 		random_dir = ((player.global_position - global_position)).normalized() + Vector3(random_vector, random_vector, random_vector)
 		randomness_cooldown = randomness_cooldown_max
-	
-	print(distance)
-	if distance <= melee_range:
+	if player.pulling_enemy:
+		cur_speed = lerp(cur_speed, Vector3.ZERO, 1*delta)
+	elif distance <= melee_range:
 		cur_speed = lerp(cur_speed, max_speed * dir, 3*delta)
 	elif distance <= detection_range:
 		cur_speed = lerp(cur_speed, max_speed * random_dir, 2*delta)
 	else:
 		cur_speed = lerp(cur_speed, Vector3.ZERO, 1*delta)
 	
-	velocity = cur_speed
+	if not player.pulling_enemy:
+		velocity = cur_speed
 
 func _on_area_3d_body_entered(body: Node3D) -> void:
 	if hitcooldown == 0 and not body.is_in_group("Enemy"):
-		if body.is_in_group("Player"):
+		if not player.pulling_enemy and body.is_in_group("Player"):
 			cur_speed += enemyknockbackstrength * -dir
+			player.velocity.y += 3
 			player.cur_speed += playerknockbackstrength * -global_transform.basis.z
-		hitcooldown = hitcooldownmax
+			hitcooldown = hitcooldownmax
+			player.pulling_self = false

@@ -54,7 +54,12 @@ var rope_direction = Vector3.ZERO
 var im_mesh:= ImmediateMesh.new()
 
 var can_pull = true
-var pulling = false
+var pulling_self = false
+var pulling_enemy = false
+var orig_distance
+var pulling_enemy_weight = 0.1
+var collider
+var holding_distance = 2
 var punkt = Vector3.ZERO
 var orig_dist = 0.0
 var orig_direction_to_point = Vector3.ZERO
@@ -290,24 +295,31 @@ func movement(delta):
 func pull(_delta):
 	var pos = camera.global_position
 	var look_dir = -camera.global_transform.basis.z
-	
 	if can_pull and pullRC.is_colliding() and Input.is_action_just_pressed("LC"):
-		punkt = pullRC.get_collision_point()
-		var _obj = pullRC.get_collider()
-		orig_dist = (punkt - pos).length()
-		orig_direction_to_point = (punkt - pos).normalized()
-		orig_direction_to_player = (pos - punkt).normalized()
-		#var wall_normal =  obj.get_normal()
-		#var final_dist = 0.8 / orig_dist
-		#if final_dist > orig_dist:
-			#wanted_dist = final_dist
-		#else:
-			#wanted_dist = orig_dist
-		print(wanted_dist)
-		can_pull = false
-		pulling = true
-	
-	if pulling:
+		collider = pullRC.get_collider()
+		if collider.is_in_group("Obstacle"):
+			punkt = pullRC.get_collision_point()
+			var _obj = pullRC.get_collider()
+			orig_dist = (punkt - pos).length()
+			orig_direction_to_point = (punkt - pos).normalized()
+			orig_direction_to_player = (pos - punkt).normalized()
+			#var wall_normal =  obj.get_normal()
+			#var final_dist = 0.8 / orig_dist
+			#if final_dist > orig_dist:
+				#wanted_dist = final_dist
+			#else:
+				#wanted_dist = orig_dist
+			print(wanted_dist)
+			can_pull = false
+			pulling_self = true
+			
+		elif collider.is_in_group("Enemy"):
+			print("JETZT")
+			can_pull = false
+			pulling_enemy = true
+			
+
+	if pulling_self:
 		var _dist = (punkt - pos).length()
 		var _direction_to_point = (punkt - pos).normalized()
 		var look_direction_to_point = look_dir.normalized()
@@ -326,13 +338,39 @@ func pull(_delta):
 		velocity.y = clamp(velocity.y, -INF, 20)
 		
 		if Input.is_action_just_released("LC"):
-			pulling = false
+			pulling_self = false
 		
 	#if is_on_floor():
 	can_pull = true
+	
+	if pulling_enemy:
+		orig_distance = holding_distance
+		collider.cur_speed = Vector3.ZERO
+		collider.velocity = Vector3.ZERO
 		
+		#var dist_to_collider = (collider.global_position - global_position).length()
+		#if dist_to_collider < orig_distance:
+			#pulling_enemy_weight = lerp(pulling_enemy_weight, 0.5, 0.3)
+		#else:
+			#pulling_enemy_weight = lerp(pulling_enemy_weight, 0.1, 0.1)
+			
+		var target_position = Vector3(global_position.x + holding_distance * -transform.basis.z.x, global_position.y + holding_distance * -camera.transform.basis.z.y, global_position.z + holding_distance * -transform.basis.z.z)
+		var old_collider_pos = collider.global_position
+		collider.global_position = lerp(collider.global_position, target_position + Vector3(0,1,0), 0.25)
+		
+		
+		collider.cur_speed.x += (collider.global_position.x - old_collider_pos.x) * 50
+		collider.cur_speed.z += (collider.global_position.z - old_collider_pos.z) * 50
+		collider.velocity.y += (collider.global_position.y - old_collider_pos.y) * 50
+		
+		#print(dist_to_collider)
+		
+		if Input.is_action_just_released("LC"):
+			pulling_enemy = false
+			
+
 func grav(delta):
-	if not pulling:
+	if not pulling_self:
 		if not is_on_floor() and not grappelnd:
 			velocity.y -= gravity_player * delta
 		elif grappelnd:

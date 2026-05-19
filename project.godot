@@ -32,6 +32,7 @@ enabled=PackedStringArray()
 
 Enemy=""
 Player=""
+Obstacle=""
 
 [input]
 
