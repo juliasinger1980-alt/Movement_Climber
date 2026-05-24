@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://buihsvwk8a5h7" path="res://textures/prototextures/Light/texture_08.png" id="4_i7141"]
 [ext_resource type="Texture2D" uid="uid://c6adtguc8igqt" path="res://textures/prototextures/Dark/texture_04.png" id="5_qfnet"]
 [ext_resource type="Texture2D" uid="uid://dhq8gku10wb02" path="res://textures/prototextures/Light/texture_04.png" id="6_i7141"]
+[ext_resource type="Script" uid="uid://c3ttad5grs1sg" path="res://scenes/levelspawn.gd" id="8_4mrxx"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dwbse"]
 albedo_texture = ExtResource("4_i7141")
@@ -25,12 +26,12 @@ sky_horizon_color = Color(0.9363807, 0.9712777, 1.0188072, 1)
 ground_bottom_color = Color(0.38431373, 0.45490196, 0.54901963, 1)
 ground_horizon_color = Color(0.9363807, 0.9712777, 1.0188072, 1)
 
-[sub_resource type="Sky" id="Sky_tlwt5"]
+[sub_resource type="Sky" id="Sky_i7141"]
 sky_material = SubResource("ProceduralSkyMaterial_fj7yv")
 
 [sub_resource type="Environment" id="Environment_aqk2v"]
 background_mode = 2
-sky = SubResource("Sky_tlwt5")
+sky = SubResource("Sky_i7141")
 ambient_light_color = Color(0.23560159, 0.23560159, 0.23560156, 1)
 ambient_light_sky_contribution = 0.0
 ambient_light_energy = 9.17
@@ -62,6 +63,8 @@ uv1_scale = Vector3(0.615, 0.615, 0.615)
 uv1_triplanar = true
 uv1_triplanar_sharpness = 4.3736067
 texture_filter = 0
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_7r4gi"]
 
 [node name="World" type="Node3D" unique_id=823230666]
 
@@ -220,6 +223,66 @@ visible = false
 size = Vector3(1, 2.4971924, 2.5686035)
 material = SubResource("StandardMaterial3D_4mrxx")
 
+[node name="CSGBox3D6" type="CSGBox3D" parent="obstacles" unique_id=712766894 groups=["Obstacle"]]
+transform = Transform3D(0.9817071, 0, 0.1903978, 0, 1, 0, -0.1903978, 0, 0.9817071, 1.940109, 4.015236, 10.446847)
+use_collision = true
+size = Vector3(2.1259766, 3.9749603, 1)
+
+[node name="CSGBox3D22" type="CSGBox3D" parent="obstacles" unique_id=1414023750 groups=["Obstacle"]]
+transform = Transform3D(0.7627248, 0, 0.6467233, 0, 1, 0, -0.6467233, 0, 0.7627248, 7.6341944, 7.69047, 8.509725)
+use_collision = true
+size = Vector3(2.1259766, 3.9749603, 1)
+
+[node name="CSGBox3D23" type="CSGBox3D" parent="obstacles" unique_id=251868635 groups=["Obstacle"]]
+transform = Transform3D(0.49327403, 0, 0.869874, 0, 1, 0, -0.869874, 0, 0.49327403, 10.374985, 11.3322735, 5.3199635)
+use_collision = true
+size = Vector3(2.1259766, 3.9749603, 1)
+
+[node name="CSGBox3D24" type="CSGBox3D" parent="obstacles" unique_id=1273746690 groups=["Obstacle"]]
+transform = Transform3D(0.49327403, 0, 0.869874, 0, 1, 0, -0.869874, 0, 0.49327403, 4.509621, 11.2825165, 1.5407245)
+use_collision = true
+size = Vector3(2.1259766, 0.5094261, 3.8657227)
+
+[node name="CSGBox3D25" type="CSGBox3D" parent="obstacles" unique_id=581106641 groups=["Obstacle"]]
+transform = Transform3D(0.49327403, 0, 0.869874, 0, 1, 0, -0.869874, 0, 0.49327403, -5.918983, 11.2825165, -4.4590273)
+use_collision = true
+size = Vector3(2.1259766, 0.5094261, 3.8657227)
+
+[node name="CSGBox3D26" type="CSGBox3D" parent="obstacles" unique_id=1885774172 groups=["Obstacle"]]
+transform = Transform3D(0.49327403, 0, 0.869874, 0, 1, 0, -0.869874, 0, 0.49327403, -7.734218, 12.335562, -5.4991713)
+use_collision = true
+size = Vector3(2.1259766, 2.6155157, 0.39367676)
+
+[node name="CSGBox3D27" type="CSGBox3D" parent="obstacles" unique_id=79655290 groups=["Obstacle"]]
+transform = Transform3D(0.49327403, 0, 0.869874, 0, 1, 0, -0.869874, 0, 0.49327403, -8.712333, 14.073205, -6.0648823)
+use_collision = true
+size = Vector3(2.2198486, 0.7418399, 2.6489868)
+
+[node name="CSGBox3D28" type="CSGBox3D" parent="obstacles" unique_id=2022035452 groups=["Obstacle"]]
+transform = Transform3D(0.49327403, 0, 0.869874, 0, 1, 0, -0.869874, 0, 0.49327403, -4.699394, 17.423145, -10.07243)
+use_collision = true
+size = Vector3(2.2198486, 0.7418399, 2.6489868)
+
+[node name="CSGBox3D29" type="CSGBox3D" parent="obstacles" unique_id=1622842419 groups=["Obstacle"]]
+transform = Transform3D(0.49327403, 0, 0.869874, 0, 1, 0, -0.869874, 0, 0.49327403, -1.8791575, 17.417511, -3.0880666)
+use_collision = true
+size = Vector3(2.2198486, 0.7418399, 2.6489868)
+
+[node name="CSGBox3D30" type="CSGBox3D" parent="obstacles" unique_id=622362311 groups=["Obstacle"]]
+transform = Transform3D(0.49327403, 0, 0.869874, -0.8698681, 0.0036826807, 0.4932707, -0.0032034682, -0.9999932, 0.0018165708, 0.4705677, 19.890326, 0.04178691)
+use_collision = true
+size = Vector3(2.2198486, 0.7418399, 2.6489868)
+
+[node name="CSGBox3D31" type="CSGBox3D" parent="obstacles" unique_id=453169556 groups=["Obstacle"]]
+transform = Transform3D(0.49327403, 0, 0.869874, -0.8698681, 0.0036826807, 0.4932707, -0.0032034682, -0.9999932, 0.0018165708, 0.4705677, 23.36719, 0.04178691)
+use_collision = true
+size = Vector3(2.2198486, 0.7418399, 2.6489868)
+
+[node name="CSGBox3D32" type="CSGBox3D" parent="obstacles" unique_id=1383411410 groups=["Obstacle"]]
+transform = Transform3D(0.49327403, 0, 0.869874, -0.8698681, 0.0036826807, 0.4932707, -0.0032034682, -0.9999932, 0.0018165708, 0.4705677, 27.545849, 0.04178691)
+use_collision = true
+size = Vector3(2.2198486, 0.7418399, 2.6489868)
+
 [node name="visuals" type="Node" parent="." unique_id=825513667]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="visuals" unique_id=1162637276]
@@ -243,17 +306,17 @@ operation = 2
 use_collision = true
 
 [node name="CSGCylinder3D" type="CSGCylinder3D" parent="outermap/CSGCombiner3D" unique_id=641218553]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 29, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 14, 0)
 radius = 15.0
-height = 60.0
+height = 30.0
 sides = 32
 material = SubResource("StandardMaterial3D_tlwt5")
 
 [node name="CSGCylinder3D2" type="CSGCylinder3D" parent="outermap/CSGCombiner3D" unique_id=943056352]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 29.5, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 14.5, 0)
 operation = 2
 radius = 12.5
-height = 60.0
+height = 30.0
 sides = 16
 material = SubResource("StandardMaterial3D_qfnet")
 
@@ -263,37 +326,12 @@ use_collision = true
 size = Vector3(75, 1, 75)
 material = SubResource("StandardMaterial3D_aqk2v")
 
-[node name="CSGBox3D" type="CSGBox3D" parent="." unique_id=712766894 groups=["Obstacle"]]
-transform = Transform3D(0.9817071, 0, 0.1903978, 0, 1, 0, -0.1903978, 0, 0.9817071, 1.940109, 4.015236, 10.446847)
-use_collision = true
-size = Vector3(2.1259766, 3.9749603, 1)
+[node name="Area3D" type="Area3D" parent="." unique_id=1136015388]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3714285, 7.67863)
+script = ExtResource("8_4mrxx")
 
-[node name="CSGBox3D2" type="CSGBox3D" parent="." unique_id=1414023750 groups=["Obstacle"]]
-transform = Transform3D(0.7627248, 0, 0.6467233, 0, 1, 0, -0.6467233, 0, 0.7627248, 7.6341944, 7.69047, 8.509725)
-use_collision = true
-size = Vector3(2.1259766, 3.9749603, 1)
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=383518901]
+transform = Transform3D(4.85, 0, 0, 0, 4.85, 0, 0, 0, 4.85, 0, 0, 0)
+shape = SubResource("BoxShape3D_7r4gi")
 
-[node name="CSGBox3D3" type="CSGBox3D" parent="." unique_id=251868635 groups=["Obstacle"]]
-transform = Transform3D(0.49327403, 0, 0.869874, 0, 1, 0, -0.869874, 0, 0.49327403, 10.374985, 11.3322735, 5.3199635)
-use_collision = true
-size = Vector3(2.1259766, 3.9749603, 1)
-
-[node name="CSGBox3D4" type="CSGBox3D" parent="." unique_id=1273746690 groups=["Obstacle"]]
-transform = Transform3D(0.49327403, 0, 0.869874, 0, 1, 0, -0.869874, 0, 0.49327403, 4.509621, 11.2825165, 1.5407245)
-use_collision = true
-size = Vector3(2.1259766, 0.5094261, 3.8657227)
-
-[node name="CSGBox3D5" type="CSGBox3D" parent="." unique_id=581106641 groups=["Obstacle"]]
-transform = Transform3D(0.49327403, 0, 0.869874, 0, 1, 0, -0.869874, 0, 0.49327403, -5.918983, 11.2825165, -4.4590273)
-use_collision = true
-size = Vector3(2.1259766, 0.5094261, 3.8657227)
-
-[node name="CSGBox3D6" type="CSGBox3D" parent="." unique_id=1885774172 groups=["Obstacle"]]
-transform = Transform3D(0.49327403, 0, 0.869874, 0, 1, 0, -0.869874, 0, 0.49327403, -7.734218, 12.335562, -5.4991713)
-use_collision = true
-size = Vector3(2.1259766, 2.6155157, 0.39367676)
-
-[node name="CSGBox3D7" type="CSGBox3D" parent="." unique_id=79655290 groups=["Obstacle"]]
-transform = Transform3D(0.49327403, 0, 0.869874, 0, 1, 0, -0.869874, 0, 0.49327403, -8.712333, 14.073205, -6.0648823)
-use_collision = true
-size = Vector3(2.2198486, 0.7418399, 2.6489868)
+[connection signal="body_entered" from="Area3D" to="Area3D" method="_on_body_entered"]
