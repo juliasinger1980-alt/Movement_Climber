@@ -1,13 +1,14 @@
 [gd_scene format=3 uid="uid://c3tdfhers8lfi"]
 
+[ext_resource type="Script" uid="uid://bixbd8bark1y5" path="res://scripts/level_manager.gd" id="1_4mrxx"]
 [ext_resource type="PackedScene" uid="uid://d326rmtugk5mr" path="res://scenes/flying_enemy.tscn" id="1_i7141"]
 [ext_resource type="PackedScene" uid="uid://cbvwiqqmobanj" path="res://scenes/player.tscn" id="1_k0juu"]
+[ext_resource type="PackedScene" uid="uid://bgr4bf1lhi6b6" path="res://scenes/floating_enemy.tscn" id="2_7r4gi"]
 [ext_resource type="Texture2D" uid="uid://nyrhd7fdhrqd" path="res://textures/assets64/- Classic 64 Asset Pack 0.6/Wood/Materials/wood_plank_02.jpg" id="3_i7141"]
 [ext_resource type="Shader" uid="uid://cs5t3ucnw13ul" path="res://shader/psx_type/psx_dithering.gdshader" id="3_qfnet"]
 [ext_resource type="Texture2D" uid="uid://buihsvwk8a5h7" path="res://textures/prototextures/Light/texture_08.png" id="4_i7141"]
 [ext_resource type="Texture2D" uid="uid://c6adtguc8igqt" path="res://textures/prototextures/Dark/texture_04.png" id="5_qfnet"]
 [ext_resource type="Texture2D" uid="uid://dhq8gku10wb02" path="res://textures/prototextures/Light/texture_04.png" id="6_i7141"]
-[ext_resource type="Script" uid="uid://c3ttad5grs1sg" path="res://scenes/levelspawn.gd" id="8_4mrxx"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dwbse"]
 albedo_texture = ExtResource("4_i7141")
@@ -22,7 +23,8 @@ uv1_triplanar_sharpness = 14.209813
 texture_filter = 0
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fj7yv"]
-sky_horizon_color = Color(0.9363807, 0.9712777, 1.0188072, 1)
+sky_top_color = Color(0, 0, 0, 1)
+sky_horizon_color = Color(0, 0, 0, 1)
 ground_bottom_color = Color(0.38431373, 0.45490196, 0.54901963, 1)
 ground_horizon_color = Color(0.9363807, 0.9712777, 1.0188072, 1)
 
@@ -41,9 +43,13 @@ ssao_enabled = true
 ssil_enabled = true
 sdfgi_use_occlusion = true
 glow_enabled = true
-volumetric_fog_enabled = true
-volumetric_fog_density = 0.01
-volumetric_fog_albedo = Color(0.9529412, 0.16862746, 0.09019608, 1)
+fog_enabled = true
+fog_light_color = Color(0, 0, 0, 1)
+fog_light_energy = 10.08
+fog_density = 0.0622
+volumetric_fog_density = 0.0629
+volumetric_fog_albedo = Color(0.23211989, 0.23211983, 0.23211983, 1)
+volumetric_fog_length = 903.04
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_aqk2v"]
 shader = ExtResource("3_qfnet")
@@ -64,12 +70,16 @@ uv1_triplanar = true
 uv1_triplanar_sharpness = 4.3736067
 texture_filter = 0
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_7r4gi"]
-
 [node name="World" type="Node3D" unique_id=823230666]
+
+[node name="LevelManager" type="Node3D" parent="." unique_id=210921484]
+script = ExtResource("1_4mrxx")
 
 [node name="flying_enemy" parent="." unique_id=1319906466 instance=ExtResource("1_i7141")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.2073581, -5.9289875)
+
+[node name="floating_enemy" parent="." unique_id=866235029 instance=ExtResource("2_7r4gi")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.741523, 1.6718161, 0)
 
 [node name="player" parent="." unique_id=683743006 instance=ExtResource("1_k0juu")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3523693, 0)
@@ -325,13 +335,3 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4947254, 0)
 use_collision = true
 size = Vector3(75, 1, 75)
 material = SubResource("StandardMaterial3D_aqk2v")
-
-[node name="Area3D" type="Area3D" parent="." unique_id=1136015388]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3714285, 7.67863)
-script = ExtResource("8_4mrxx")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=383518901]
-transform = Transform3D(4.85, 0, 0, 0, 4.85, 0, 0, 0, 4.85, 0, 0, 0)
-shape = SubResource("BoxShape3D_7r4gi")
-
-[connection signal="body_entered" from="Area3D" to="Area3D" method="_on_body_entered"]

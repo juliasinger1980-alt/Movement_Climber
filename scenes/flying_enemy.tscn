@@ -8,7 +8,7 @@
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_vbcm2"]
 
-[node name="Node3D" type="Node3D" unique_id=1319906466]
+[node name="flying_enemy" type="Node3D" unique_id=1319906466]
 
 [node name="CharacterBody3D" type="CharacterBody3D" parent="." unique_id=429881666 groups=["Enemy"]]
 script = ExtResource("1_vbcm2")
@@ -24,5 +24,12 @@ mesh = SubResource("SphereMesh_ve0v3")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D/Area3D" unique_id=1639002731]
 transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, 0, 0, 0)
 shape = SubResource("SphereShape3D_vbcm2")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="CharacterBody3D" unique_id=406679451]
+light_color = Color(1, 0, 0.25490198, 1)
+light_energy = 10.6
+light_volumetric_fog_energy = 5.153
+omni_range = 74.83
+omni_shadow_mode = 0
 
 [connection signal="body_entered" from="CharacterBody3D/Area3D" to="CharacterBody3D" method="_on_area_3d_body_entered"]

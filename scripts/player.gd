@@ -8,6 +8,7 @@ extends CharacterBody3D
 @onready var grapplecast: RayCast3D = $head/Camera3D/Grapplecast
 @onready var grappleline:= MeshInstance3D.new()
 @onready var pullRC: RayCast3D = $head/Camera3D/Pullcast
+@onready var flying_enemy: Node3D = $"../../flying_enemy"
 
 var gravity_player = 40
 
@@ -35,12 +36,14 @@ var fov_sliding = 115.0
 
 var can_walljump = true
 var can_wallkick = true
-var wallkickstr = 15
-var wallkickjumpstr = 12
+var can_enemykick = true
+var wallkickstr = 18
+#var wallkickjumpstr = 12
 var walljumpstr = 18
 var walljumpbuffertimer = 0.0
 var wallkickbuffertimer = 0.0
 var wallkickmovementtimer = 0.0
+var enemykickbuffertimer = 0.0
 
 @export var desired_distance:float = 2
 var grappelnd = false
@@ -77,6 +80,8 @@ var slide_cooldown = 0.2
 @onready var slide_cooldown_max = slide_cooldown
 @onready var slide_duration_max = slide_timer
 
+var fliegend = false
+
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	add_child(grappleline)
@@ -99,6 +104,8 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 	
 	fps_anzeige()
+	
+	Debugging()
 
 func _process(_delta: float) -> void:
 	#GRAPPLE_SCHNUR
@@ -202,9 +209,16 @@ func movement(delta):
 		if Input.is_action_just_pressed("RC"):
 			wallkickbuffertimer = 0.150
 			wallkickmovementtimer = 0.5
+			
+	if can_enemykick:
+		if Input.is_action_just_pressed("RC"):
+			enemykickbuffertimer = 0.150
 	
 	walljumpbuffertimer -= delta
 	walljumpbuffertimer = clamp(walljumpbuffertimer, 0, 0.150)
+	
+	enemykickbuffertimer -= delta
+	enemykickbuffertimer = clamp(walljumpbuffertimer, 0, 0.150)
 	
 	wallkickmovementtimer -= delta
 	wallkickmovementtimer = clamp(walljumpbuffertimer, 0, 0.5)
@@ -212,13 +226,23 @@ func movement(delta):
 	wallkickbuffertimer -= delta
 	wallkickbuffertimer = clamp(wallkickbuffertimer, 0, 0.150)
 	
+	#print(camera.global_transform.basis.z)
+	
 	if wallkickbuffertimer > 0:
-		if WKcollider and WKcollider.collision_layer == 1:
-			var opp_dir = Vector3(transform.basis.z.x, camera.transform.basis.z.y, transform.basis.z.z)
+		if WKcollider and WKcollider.is_in_group("Obstacle"):
+			var opp_dir = camera.global_transform.basis.z
 			cur_speed = opp_dir * wallkickstr
 			velocity.y = opp_dir.y * wallkickstr
 			can_wallkick = false
 			wallkickbuffertimer = 0
+			
+	#if enemykickbuffertimer > 0:
+		#if WKcollider and WKcollider.is_in_group("Obstacle"):
+			#var opp_dir = Vector3(transform.basis.z.x, camera.transform.basis.z.y, transform.basis.z.z)
+			#cur_speed = opp_dir * wallkickstr
+			#velocity.y = opp_dir.y * wallkickstr
+			#can_wallkick = false
+			#wallkickbuffertimer = 0
 	
 	if walljumpbuffertimer > 0:
 		if WJcollider and WJcollider.collision_layer == 1:
@@ -309,12 +333,12 @@ func pull(_delta):
 				#wanted_dist = final_dist
 			#else:
 				#wanted_dist = orig_dist
-			print(wanted_dist)
+			#print(wanted_dist)
 			can_pull = false
 			pulling_self = true
 			
 		elif collider.is_in_group("Enemy"):
-			print("JETZT")
+			#print("JETZT")
 			can_pull = false
 			pulling_enemy = true
 			
@@ -354,7 +378,7 @@ func pull(_delta):
 		#else:
 			#pulling_enemy_weight = lerp(pulling_enemy_weight, 0.1, 0.1)
 			
-		var target_position = Vector3(global_position.x + holding_distance * -transform.basis.z.x, global_position.y + holding_distance * -camera.transform.basis.z.y, global_position.z + holding_distance * -transform.basis.z.z)
+		var target_position = global_position + holding_distance * -camera.global_transform.basis.z
 		var old_collider_pos = collider.global_position
 		collider.global_position = lerp(collider.global_position, target_position + Vector3(0,1,0), 0.25)
 		
@@ -370,13 +394,14 @@ func pull(_delta):
 			
 
 func grav(delta):
-	if not pulling_self:
-		if not is_on_floor() and not grappelnd:
-			velocity.y -= gravity_player * delta
-		elif grappelnd:
-			velocity.y = -gravity_player * delta * 8
-	#else:
-		#velocity.y -= gravity_player * delta /2
+	if not fliegend:
+		if not pulling_self:
+			if not is_on_floor() and not grappelnd:
+				velocity.y -= gravity_player * delta
+			elif grappelnd:
+				velocity.y = -gravity_player * delta * 8
+		#else:
+			#velocity.y -= gravity_player * delta /2
 		
 
 func fps_anzeige():
@@ -391,3 +416,17 @@ func _unhandled_input(event: InputEvent) -> void:
 		
 		y_rot = -event.relative.x * mouse_sensi
 		rotation.y += y_rot
+		
+##DEBUGGING
+func Debugging():
+	if Input.is_action_just_pressed("T"):
+		if fliegend:
+			fliegend = false
+		elif not fliegend:
+			fliegend = true
+	
+	if Input.is_action_just_pressed("Q"):
+		if flying_enemy:
+			flying_enemy.queue_free()
+		
+	
