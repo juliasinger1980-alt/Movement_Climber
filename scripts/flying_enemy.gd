@@ -16,12 +16,11 @@ var hitcooldownmax = 0.5
 var randomness_cooldown = 0
 var randomness_cooldown_max = 1
 var randomness_multiplier = 0.5
-func _ready() -> void:
-	pass
-	
 
-func _physics_process(delta: float) -> void:
+func _ready() -> void:
 	player =  get_node("/root/World/player/CharacterBody3D")
+	
+func _physics_process(delta: float) -> void:
 	look_at(player.position)
 	hitcooldown -= delta
 	hitcooldown = clamp(hitcooldown, 0, hitcooldownmax)
@@ -61,3 +60,5 @@ func _on_area_3d_body_entered(body: Node3D) -> void:
 			player.cur_speed += playerknockbackstrength * -global_transform.basis.z
 			hitcooldown = hitcooldownmax
 			player.pulling_self = false
+		else:
+			player.pulling_enemy = false

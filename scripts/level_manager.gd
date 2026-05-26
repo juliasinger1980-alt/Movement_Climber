@@ -12,7 +12,7 @@ func _ready():
 	
 	EventBus.chunk_triggered.connect(_on_chunk_triggered)
 	for i in range(preload_level_amount):
-		print(i)
+		print("preload chunk i:", i)
 		spawn_next_chunk()
 
 
