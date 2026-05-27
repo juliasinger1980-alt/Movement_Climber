@@ -7,7 +7,7 @@ var player
 var max_speed = 6
 var random_dir: Vector3
 var dir: Vector3
-var detection_range = 50
+var detection_range = 25
 var melee_range = 2.5
 var enemyknockbackstrength = 15
 var playerknockbackstrength = 30

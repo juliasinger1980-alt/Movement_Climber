@@ -22,7 +22,7 @@ var max_speed = 0.0
 var sprinting = false
 var dir = Vector3.ZERO
 
-var sprungstaerke = 13.0
+var sprungstaerke = 15.0
 var air_control_mult = 0.2
 var sprungbuffertimer = 0
 var koyotebuffertimer = 0
@@ -43,7 +43,7 @@ var fov_sliding = 115.0
 var can_walljump = true
 var can_wallkick = true
 var can_enemykick = true
-var wallkickstr = 18
+var wallkickstr = 22
 #var wallkickjumpstr = 12
 var walljumpstr = 18
 var walljumpbuffertimer = 0.0
@@ -63,6 +63,7 @@ var rope_direction = Vector3.ZERO
 var im_mesh:= ImmediateMesh.new()
 
 var can_pull = true
+var self_pull_speed_mult = 80
 var pulling_self = false
 var pulling_enemy = false
 var orig_distance
@@ -106,7 +107,7 @@ func _physics_process(delta: float) -> void:
 			cur_speed = cur_speed.slide(n)
 	
 	pull(delta)
-	
+	print(cur_speed)
 	#grappling_hook(delta)
 	
 	move_and_slide()
@@ -171,9 +172,10 @@ func movement(delta):
 		#BODENMOVEMENT
 		else:
 			cur_speed = lerp(cur_speed, max_speed * dir, 12 * delta)
-	
-	velocity.x = cur_speed.x
-	velocity.z = cur_speed.z
+			
+	if not pulling_self:
+		velocity.x = cur_speed.x
+		velocity.z = cur_speed.z
 	
 	#SLIDE
 
@@ -366,12 +368,12 @@ func pull(_delta):
 		position.y -= camera.position.y
 		
 		#cur_speed = (position - old_position) * 100
-		velocity.y += (position.y - old_position.y) * 40
-		cur_speed.x += (position.x - old_position.x) * 17
-		cur_speed.z += (position.z - old_position.z) * 17
-		velocity.y = clamp(velocity.y, -INF, 20)
+		#velocity.y = clamp(velocity.y, -INF, 20)
 		
 		if Input.is_action_just_released("LC"):
+			velocity.y += (position.y - old_position.y) * self_pull_speed_mult
+			cur_speed.x += (position.x - old_position.x) * self_pull_speed_mult
+			cur_speed.z += (position.z - old_position.z) * self_pull_speed_mult
 			pulling_self = false
 		
 	#if is_on_floor():
@@ -391,7 +393,6 @@ func pull(_delta):
 		var target_position = global_position + holding_distance * -camera.global_transform.basis.z
 		var old_collider_pos = collider.global_position
 		collider.global_position = lerp(collider.global_position, target_position + Vector3(0,1,0), 0.25)
-		
 		
 		collider.cur_speed.x += (collider.global_position.x - old_collider_pos.x) * 50
 		collider.cur_speed.z += (collider.global_position.z - old_collider_pos.z) * 50
