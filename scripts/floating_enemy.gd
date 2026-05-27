@@ -8,6 +8,7 @@ var frequency = 1.1
 var amplitude = 0.3
 var time:= 0.0
 var cur_speed = 0
+var bounce_amount = 0
 
 func _ready() -> void:
 	player =  get_node("/root/World/player/CharacterBody3D")
@@ -16,6 +17,8 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	
 	movement(delta)
+	
+	death()
 	
 	move_and_slide()
 	
@@ -29,5 +32,11 @@ func movement(delta):
 func _on_body_entered(body):
 	if body.is_in_group("Player"):
 		player.velocity.y += 30
+		bounce_amount += 1
 		if player.pulling_enemy:
 			player.pulling_enemy = false
+			
+func death():
+	#print(bounce_amount)
+	if bounce_amount == 5:
+		queue_free()

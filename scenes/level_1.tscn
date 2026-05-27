@@ -1,12 +1,12 @@
 [gd_scene format=3 uid="uid://oht02a23nijq"]
 
-[ext_resource type="Texture2D" uid="uid://c6adtguc8igqt" path="res://textures/prototextures/Dark/texture_04.png" id="1_wwpf4"]
-[ext_resource type="Script" uid="uid://boqrma2jq4umb" path="res://scripts/chunk_trigger.gd" id="2_m7ahb"]
+[ext_resource type="Texture2D" uid="uid://c6adtguc8igqt" path="res://textures/prototextures/Dark/texture_04.png" id="1_bswci"]
+[ext_resource type="Script" uid="uid://boqrma2jq4umb" path="res://scripts/chunk_trigger.gd" id="2_rus8k"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hg5vs"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7r24r"]
-albedo_texture = ExtResource("1_wwpf4")
+albedo_texture = ExtResource("1_bswci")
 albedo_texture_force_srgb = true
 uv1_triplanar = true
 uv1_triplanar_sharpness = 7.210002
@@ -108,7 +108,7 @@ sides = 16
 material = SubResource("StandardMaterial3D_7r24r")
 
 [node name="Area3D" type="Area3D" parent="." unique_id=668637865]
-script = ExtResource("2_m7ahb")
+script = ExtResource("2_rus8k")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=1609559765]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.12322998, 0, -0.0043029785)

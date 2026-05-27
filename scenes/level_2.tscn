@@ -1,0 +1,90 @@
+[gd_scene format=3 uid="uid://buv4k2m0m30hq"]
+
+[ext_resource type="Texture2D" uid="uid://c6adtguc8igqt" path="res://textures/prototextures/Dark/texture_04.png" id="1_jm1iu"]
+[ext_resource type="Script" uid="uid://boqrma2jq4umb" path="res://scripts/chunk_trigger.gd" id="2_pbc48"]
+[ext_resource type="PackedScene" uid="uid://bgr4bf1lhi6b6" path="res://scenes/floating_enemy.tscn" id="3_pbc48"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eqxsl"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_b4j7a"]
+albedo_texture = ExtResource("1_jm1iu")
+albedo_texture_force_srgb = true
+uv1_triplanar = true
+uv1_triplanar_sharpness = 7.210002
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wo48x"]
+size = Vector3(25.845581, 1, 26.393616)
+
+[node name="level2" type="Node3D" unique_id=1623461385]
+
+[node name="Node3D" type="Node3D" parent="." unique_id=676455670]
+
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="Node3D" unique_id=452510818]
+operation = 2
+use_collision = true
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="Node3D/CSGCombiner3D" unique_id=1889954161]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 14, 0)
+radius = 15.0
+height = 30.0
+sides = 32
+material = SubResource("StandardMaterial3D_eqxsl")
+
+[node name="CSGCylinder3D2" type="CSGCylinder3D" parent="Node3D/CSGCombiner3D" unique_id=1322276112]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 14.5, 0)
+operation = 2
+radius = 12.5
+height = 31.0
+sides = 16
+material = SubResource("StandardMaterial3D_b4j7a")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Node3D" unique_id=1595118497]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.122335196, 0.11227894, -7.529411)
+use_collision = true
+size = Vector3(6.473633, 1, 7.317322)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Node3D" unique_id=1901338851]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.988899, 16.862148, 9.465787)
+use_collision = true
+size = Vector3(7.3460693, 1, 7.317322)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="Node3D" unique_id=1984875918]
+transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, 8.242302, 16.862148, -4.2048273)
+use_collision = true
+size = Vector3(7.3460693, 1, 7.317322)
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="Node3D" unique_id=1793058568]
+transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, -0.20194912, 16.862148, -4.2048273)
+use_collision = true
+size = Vector3(7.3460693, 1, 7.317322)
+
+[node name="CSGBox3D5" type="CSGBox3D" parent="Node3D" unique_id=605007994]
+transform = Transform3D(0, 3.090862e-08, 0.99999994, 0.99999994, -3.0908616e-08, -1.0980948e-22, 3.090862e-08, 1, -3.090862e-08, -0.00498724, 20.232796, 0.37776896)
+use_collision = true
+size = Vector3(3.7486877, 1, 2.6555634)
+
+[node name="CSGBox3D6" type="CSGBox3D" parent="Node3D" unique_id=2134968314]
+transform = Transform3D(0, 3.090862e-08, 0.99999994, 0.99999994, -3.0908616e-08, -1.0980948e-22, 3.090862e-08, 1, -3.090862e-08, -0.00498724, 24.861105, 0.37776896)
+use_collision = true
+size = Vector3(3.7486877, 1, 2.6555634)
+
+[node name="CSGBox3D7" type="CSGBox3D" parent="Node3D" unique_id=767121423]
+transform = Transform3D(0, 3.090862e-08, 0.99999994, 0.99999994, -3.0908616e-08, -1.0980948e-22, 3.090862e-08, 1, -3.090862e-08, -0.00498724, 29.146156, 0.37776896)
+use_collision = true
+size = Vector3(3.7486877, 1, 2.6555634)
+
+[node name="Area3D" type="Area3D" parent="." unique_id=1297127573]
+script = ExtResource("2_pbc48")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=1180543887]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.12322998, 0, -0.0043029785)
+shape = SubResource("BoxShape3D_wo48x")
+
+[node name="floating_enemy" parent="." unique_id=866235029 instance=ExtResource("3_pbc48")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.150998, 12.072733, 1.8446503)
+
+[node name="floating_enemy2" parent="." unique_id=282747203 instance=ExtResource("3_pbc48")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.317866, 6.917466, -2.9879737)
+
+[node name="floating_enemy3" parent="." unique_id=427142256 instance=ExtResource("3_pbc48")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.65147, 0, -6.667696)

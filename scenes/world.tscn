@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://buihsvwk8a5h7" path="res://textures/prototextures/Light/texture_08.png" id="4_i7141"]
 [ext_resource type="Texture2D" uid="uid://c6adtguc8igqt" path="res://textures/prototextures/Dark/texture_04.png" id="5_qfnet"]
 [ext_resource type="Texture2D" uid="uid://dhq8gku10wb02" path="res://textures/prototextures/Light/texture_04.png" id="6_i7141"]
+[ext_resource type="Shader" uid="uid://d2bt6twgvctsl" path="res://shader/pixelation.gdshader" id="7_w7kh3"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dwbse"]
 albedo_texture = ExtResource("4_i7141")
@@ -52,6 +53,11 @@ volumetric_fog_albedo = Color(0.23211989, 0.23211983, 0.23211983, 1)
 volumetric_fog_length = 903.04
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_aqk2v"]
+shader = ExtResource("7_w7kh3")
+shader_parameter/pixelation = 0.0490000023275
+shader_parameter/opacity = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_w7kh3"]
 shader = ExtResource("3_qfnet")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tlwt5"]
@@ -298,8 +304,19 @@ size = Vector3(2.2198486, 0.7418399, 2.6489868)
 [node name="WorldEnvironment" type="WorldEnvironment" parent="visuals" unique_id=1162637276]
 environment = SubResource("Environment_aqk2v")
 
-[node name="ColorRect" type="ColorRect" parent="visuals" unique_id=552186803]
+[node name="pixelation" type="ColorRect" parent="visuals" unique_id=552186803]
+visible = false
 material = SubResource("ShaderMaterial_aqk2v")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="dithering" type="ColorRect" parent="visuals" unique_id=1911518210]
+z_index = 1
+material = SubResource("ShaderMaterial_w7kh3")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0

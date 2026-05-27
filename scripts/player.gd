@@ -12,6 +12,7 @@ extends CharacterBody3D
 
 var gravity_player = 40
 
+var move_input: Vector2
 var cur_speed = Vector3.ZERO
 var target_speed_gehen = 6.0
 var target_speed_sprint = 11.0
@@ -26,6 +27,11 @@ var air_control_mult = 0.2
 var sprungbuffertimer = 0
 var koyotebuffertimer = 0
 
+var cam_sway_rot_dir
+var sway_lerp_str = 5
+var sway_amount_deg_sprint = 2
+var sway_amount_deg_walk = 1
+var orig_cam_rot
 var x_rot = 0.0
 var y_rot = 0.0
 var mouse_sensi = 0.0015
@@ -83,6 +89,8 @@ var slide_cooldown = 0.2
 var fliegend = false
 
 func _ready() -> void:
+
+	orig_cam_rot = camera.rotation
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	add_child(grappleline)
 	grappleline.mesh = im_mesh
@@ -104,6 +112,8 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 	
 	fps_anzeige()
+	
+	cam_sway(delta)
 	
 	Debugging()
 
@@ -130,7 +140,7 @@ func movement(delta):
 	if Input.is_action_pressed("D"):
 		dir += global_transform.basis.x
 	
-	var move_input = Input.get_vector("A","D","W","S")
+	move_input = Input.get_vector("A","D","W","S")
 	dir = dir.normalized()
 	#SPRINTEN UND GRAPPLING MAX SPEED
 	if grappelnd:
@@ -417,14 +427,36 @@ func _unhandled_input(event: InputEvent) -> void:
 		y_rot = -event.relative.x * mouse_sensi
 		rotation.y += y_rot
 		
+
+func cam_sway(delta):
+	if move_input.x > 0:
+		if sprinting:
+			camera.rotation.z = lerp(camera.rotation.z, orig_cam_rot.z - deg_to_rad(sway_amount_deg_sprint), sway_lerp_str*delta)
+		else:
+			camera.rotation.z = lerp(camera.rotation.z, orig_cam_rot.z - deg_to_rad(sway_amount_deg_walk), sway_lerp_str*delta)
+			
+	elif move_input.x < 0:
+		if sprinting:
+			camera.rotation.z = lerp(camera.rotation.z, orig_cam_rot.z + deg_to_rad(sway_amount_deg_sprint), sway_lerp_str*delta)
+		else:
+			camera.rotation.z = lerp(camera.rotation.z, orig_cam_rot.z + deg_to_rad(sway_amount_deg_walk), sway_lerp_str*delta)
+	
+	else:
+		camera.rotation.z = lerp(camera.rotation.z, orig_cam_rot.z, sway_lerp_str*delta)
+
 ##DEBUGGING
 func Debugging():
+	#NO-GRAV modus (T)
 	if Input.is_action_just_pressed("T"):
 		if fliegend:
 			fliegend = false
 		elif not fliegend:
 			fliegend = true
+	if fliegend:
+		if Input.is_action_just_pressed("G"):
+			velocity.y += 50
 	
+	#Flying-enemy killen (Q)
 	if Input.is_action_just_pressed("Q"):
 		if flying_enemy:
 			flying_enemy.queue_free()
