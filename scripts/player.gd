@@ -107,7 +107,7 @@ func _physics_process(delta: float) -> void:
 			cur_speed = cur_speed.slide(n)
 	
 	pull(delta)
-	print(cur_speed)
+	#print(cur_speed)
 	#grappling_hook(delta)
 	
 	move_and_slide()

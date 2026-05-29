@@ -7,9 +7,9 @@
 [ext_resource type="Texture2D" uid="uid://nyrhd7fdhrqd" path="res://textures/assets64/- Classic 64 Asset Pack 0.6/Wood/Materials/wood_plank_02.jpg" id="3_i7141"]
 [ext_resource type="Shader" uid="uid://cs5t3ucnw13ul" path="res://shader/psx_type/psx_dithering.gdshader" id="3_qfnet"]
 [ext_resource type="Texture2D" uid="uid://buihsvwk8a5h7" path="res://textures/prototextures/Light/texture_08.png" id="4_i7141"]
-[ext_resource type="Texture2D" uid="uid://c6adtguc8igqt" path="res://textures/prototextures/Dark/texture_04.png" id="5_qfnet"]
-[ext_resource type="Texture2D" uid="uid://dhq8gku10wb02" path="res://textures/prototextures/Light/texture_04.png" id="6_i7141"]
 [ext_resource type="Shader" uid="uid://d2bt6twgvctsl" path="res://shader/pixelation.gdshader" id="7_w7kh3"]
+[ext_resource type="Texture2D" uid="uid://cus6psbeso1jl" path="res://textures/assets64/- Classic 64 Asset Pack 0.6/Walls/Materials/siding_wood_06.jpg" id="9_e3hyu"]
+[ext_resource type="Texture2D" uid="uid://de10vw3ghjkvh" path="res://textures/assets64/- Classic 64 Asset Pack 0.6/Concrete/Materials/concrete_04.png" id="9_w7kh3"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dwbse"]
 albedo_texture = ExtResource("4_i7141")
@@ -39,9 +39,6 @@ ambient_light_color = Color(0.23560159, 0.23560159, 0.23560156, 1)
 ambient_light_sky_contribution = 0.0
 ambient_light_energy = 9.17
 tonemap_mode = 1
-ssr_enabled = true
-ssao_enabled = true
-ssil_enabled = true
 sdfgi_use_occlusion = true
 glow_enabled = true
 fog_enabled = true
@@ -51,6 +48,10 @@ fog_density = 0.0622
 volumetric_fog_density = 0.0629
 volumetric_fog_albedo = Color(0.23211989, 0.23211983, 0.23211983, 1)
 volumetric_fog_length = 903.04
+adjustment_enabled = true
+adjustment_brightness = 1.29
+adjustment_contrast = 1.135
+adjustment_saturation = 1.37
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_aqk2v"]
 shader = ExtResource("7_w7kh3")
@@ -63,13 +64,14 @@ shader = ExtResource("3_qfnet")
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tlwt5"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qfnet"]
-albedo_texture = ExtResource("5_qfnet")
+albedo_texture = ExtResource("9_e3hyu")
 albedo_texture_force_srgb = true
+uv1_scale = Vector3(1.5, 1.5, 1.5)
 uv1_triplanar = true
-uv1_triplanar_sharpness = 7.210002
+uv1_triplanar_sharpness = 11.541978
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_aqk2v"]
-albedo_texture = ExtResource("6_i7141")
+albedo_texture = ExtResource("9_w7kh3")
 albedo_texture_force_srgb = true
 uv1_scale = Vector3(0.615, 0.615, 0.615)
 uv1_triplanar = true
@@ -340,7 +342,7 @@ sides = 32
 material = SubResource("StandardMaterial3D_tlwt5")
 
 [node name="CSGCylinder3D2" type="CSGCylinder3D" parent="outermap/CSGCombiner3D" unique_id=943056352]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 14.5, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0010104179, 14.5, 0.00061893463)
 operation = 2
 radius = 12.5
 height = 30.0
